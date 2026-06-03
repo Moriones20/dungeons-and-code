@@ -15,10 +15,10 @@ responde y se cambia de ventana (siguiente pregunta / pantalla final).
 Cada persona es **dueña** de su área: revisa los PRs que la tocan y mantiene su paquete.
 
 | Persona | Área | Paquetes principales |
-|---------|------|----------------------|
+|---|------|----------------------|
 | 1 | Sistema de ventanas y botones | `controlador.Navegador`, `vista.*` |
 | 2 | Preguntas y su lógica | `modelo` (`Pregunta`, `Partida`...) |
-| 3 (Andrés) | Base de datos de preguntas | `basedatos` (conexión + `RepositorioPreguntas`) |
+| 3 | Base de datos de preguntas | `basedatos` (conexión + `RepositorioPreguntas`) |
 | 4 | Puntuación y pantalla final | `servicio.ServicioPuntajes`, `vista.resultado` |
 | 5 | Aspectos visuales + integración | `vista.componentes`, estilos CSS, coordinación/build |
 
