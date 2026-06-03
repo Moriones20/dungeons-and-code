@@ -10,13 +10,23 @@ evitamos pisarnos el código y los conflictos de merge.
 
 Cada persona es **dueña** de su área: revisa los PRs que la tocan y mantiene su paquete.
 
+El juego es tipo **Preguntados** (trivia): se muestra una pregunta, el jugador
+responde y se cambia de ventana (siguiente pregunta / pantalla final).
+Cada persona es **dueña** de su área: revisa los PRs que la tocan y mantiene su paquete.
+
 | Persona | Área | Paquetes principales |
 |---------|------|----------------------|
-| 1 | Mapa / Mazmorra | `modelo.mazmorra`, generación |
-| 2 | Jugador & movimiento | `modelo.entidad.Jugador`, `controlador.ManejadorEntrada` |
-| 3 | Combate & enemigos | `modelo.combate`, `modelo.entidad.Enemigo` |
-| 4 | Interfaz / Menús | `vista.*` |
-| 5 | Persistencia & coordinación | `servicio`, `controlador.ControladorJuego`, `modelo.EstadoJuego`, build/CI |
+| 1 | Sistema de ventanas y botones | `controlador.Navegador`, `vista.*` |
+| 2 | Preguntas y su lógica | `modelo` (`Pregunta`, `Partida`...) |
+| 3 (Andrés) | Base de datos de preguntas | `basedatos` (conexión + `RepositorioPreguntas`) |
+| 4 | Puntuación y pantalla final | `servicio.ServicioPuntajes`, `vista.resultado` |
+| 5 | Aspectos visuales + integración | `vista.componentes`, estilos CSS, coordinación/build |
+
+**Orden de trabajo acordado** (cada paso se apoya en el anterior):
+1. Ventanas y botones (navegación entre pantallas).
+2. Preguntas y su lógica, de la mano con la base de datos.
+3. Puntuación y pantalla final.
+4. Aspectos visuales al final.
 
 > Trabaja sobre todo en **tu** paquete. Si necesitas tocar el de otra persona,
 > avísale antes para que no estéis editando el mismo archivo a la vez.
@@ -45,14 +55,14 @@ git checkout main
 git pull
 
 # 2. Crea tu rama (nombre descriptivo)
-git checkout -b feature/mapa-generacion
+git checkout -b feature/navegacion-ventanas
 
 # 3. Trabaja y haz commits pequeños y frecuentes
 git add .
-git commit -m "feat: generar salas conectadas en el mapa"
+git commit -m "feat: cambiar de la pantalla de menu a la de juego"
 
 # 4. Sube tu rama
-git push -u origin feature/mapa-generacion
+git push -u origin feature/navegacion-ventanas
 
 # 5. Abre un Pull Request en GitHub hacia main
 ```
@@ -67,7 +77,7 @@ git push -u origin feature/mapa-generacion
 
 `feat:` nueva función · `fix:` arreglo · `refactor:` · `test:` · `docs:` · `chore:`
 
-Ejemplo: `fix: la vida del jugador ya no baja de cero`
+Ejemplo: `fix: la respuesta correcta ahora suma puntaje`
 
 ---
 

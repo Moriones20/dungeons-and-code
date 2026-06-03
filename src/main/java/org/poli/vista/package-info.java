@@ -1,12 +1,11 @@
 /**
- * Capa de presentación (JavaFX).
+ * Capa de presentación (JavaFX): las pantallas del juego.
+ *   - menu/       Pantalla de inicio (botones Jugar / Salir).
+ *   - juego/      Pantalla de preguntas con sus opciones.
+ *   - resultado/  Pantalla final (¡Ganaste! / Game Over).
+ *   - componentes/ Controles y estilos reutilizables (Persona 5).
  *
- * Aquí van las pantallas y componentes visuales del juego:
- *   - menu/        Pantallas de menú y navegación.
- *   - juego/       Render del mapa, HUD, escena de juego.
- *   - componentes/ Controles reutilizables (barras de vida, botones...).
- *
- * Esta capa SÍ usa JavaFX. La capa modelo nunca debe depender de esta.
- * Responsable principal: Persona 4 (Interfaz/Menús).
+ * El cambio entre pantallas lo gestiona {@link org.poli.controlador.Navegador}.
+ * La capa modelo nunca debe depender de esta.
  */
 package org.poli.vista;

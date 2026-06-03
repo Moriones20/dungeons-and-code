@@ -24,14 +24,19 @@ arrancarla directamente).
 
 ## Estructura
 
+Juego tipo **Preguntados**: muestra pregunta → respondes → cambia de ventana.
+Cada carpeta es una *base* (stub) lista para que su dueño la implemente.
+
 ```
 org.poli
-├── App.java        Arranque JavaFX
-├── modelo/         Lógica del juego (sin JavaFX, testeable)
-├── controlador/    Une modelo y vista (bucle de juego, input)
-├── vista/          Pantallas y componentes JavaFX
-├── servicio/       Guardado / carga
-└── util/           Constantes y utilidades
+├── App.java        Arranque JavaFX (abre la ventana — base funcional)
+├── Launcher.java   Enciende la app (no tocar)
+├── modelo/         Pregunta y lógica de la partida (sin JavaFX, testeable)
+├── basedatos/      Repositorio de preguntas (BD)
+├── controlador/    Navegador: cambia de pantalla
+├── vista/          Pantallas: menu/, juego/, resultado/
+├── servicio/       Puntajes
+└── util/           Constantes y configuración
 ```
 
 ## Cómo colaboramos

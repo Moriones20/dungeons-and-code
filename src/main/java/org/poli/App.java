@@ -11,15 +11,17 @@ import org.poli.util.Constantes;
 /**
  * Punto de entrada de la aplicación JavaFX.
  *
- * Esta clase configura la ventana principal (Stage) y la escena inicial.
- * Idealmente NADIE la modifica sin acordarlo con el equipo, porque la tocan todos.
+ * Por ahora solo abre una ventana con el título: es la BASE funcional.
+ * Persona 1 cambiará esto para arrancar el Navegador en la pantalla de menú.
  */
 public class App extends Application {
 
     @Override
     public void start(Stage escenarioPrincipal) {
-        // Pantalla provisional: cada equipo irá reemplazando esto por sus vistas.
-        Label titulo = new Label("Dungeons & Code");
+        // TODO (Persona 1): reemplazar esta pantalla provisional por:
+        //   Navegador navegador = new Navegador(escenarioPrincipal, repositorio);
+        //   navegador.irAlMenu();
+        Label titulo = new Label(Constantes.TITULO_JUEGO);
         StackPane raiz = new StackPane(titulo);
 
         Scene escena = new Scene(raiz, Constantes.ANCHO_VENTANA, Constantes.ALTO_VENTANA);
@@ -27,9 +29,5 @@ public class App extends Application {
         escenarioPrincipal.setTitle(Constantes.TITULO_JUEGO);
         escenarioPrincipal.setScene(escena);
         escenarioPrincipal.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
