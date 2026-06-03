@@ -1,14 +1,22 @@
 package org.poli.basedatos;
 
+import java.util.List;
+
+import org.poli.modelo.Pregunta;
+
 /**
- * Fuente de preguntas del juego (las leerá de la base de datos).
- *
- * BASE para implementar. Responsable: Persona 3 / Andrés (Base de datos).
- *
- * Idea: dejar aquí un método tipo `List<Pregunta> obtenerPreguntas()` para que
- * el resto del juego pida preguntas sin saber de dónde salen (BD, archivo...).
+ * Define las operaciones necesarias para obtener preguntas del juego.
+ * 
+ * Esta interfaz permite separar la fuente de datos de la lógica principal.
+ * Las preguntas podrían obtenerse desde un archivo CSV, una base de datos
+ * u otra fuente sin afectar el resto del programa.
  */
 public interface RepositorioPreguntas {
 
-    // TODO (Andrés): definir los métodos para obtener preguntas desde la BD.
+    /**
+     * Obtiene la lista de preguntas disponibles para el juego.
+     *
+     * @return lista de preguntas cargadas desde la fuente de datos
+     */
+    List<Pregunta> obtenerPreguntas();
 }

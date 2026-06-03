@@ -1,0 +1,16 @@
+piso,tema,pregunta,opcionA,opcionB,opcionC,opcionD,respuestaCorrecta
+1,Variables y tipos de datos,¿Qué tipo de dato se usa en Java para almacenar números enteros?,String,int,boolean,double,1
+1,Variables y tipos de datos,¿Qué tipo de dato se usa para guardar verdadero o falso?,char,float,boolean,String,2
+1,Variables y tipos de datos,¿Qué tipo de dato se usa para almacenar texto?,String,int,double,boolean,0
+2,Operadores,¿Qué operador se usa en Java para comparar igualdad?,=,==,!=,>=,1
+2,Operadores,¿Qué operador representa AND lógico en Java?,&&,||,!,+,0
+2,Operadores,¿Qué operador representa OR lógico en Java?,&&,||,!,%,1
+3,Condicionales,¿Qué palabra se usa para evaluar una condición?,for,if,while,class,1
+3,Condicionales,¿Qué palabra se usa cuando la condición del if no se cumple?,else,break,new,return,0
+3,Condicionales,¿Cuál estructura permite evaluar varios casos?,if,switch,while,int,1
+4,Ciclos,¿Qué estructura permite repetir instrucciones?,if,for,switch,String,1
+4,Ciclos,¿Qué ciclo se ejecuta mientras una condición sea verdadera?,while,else,int,case,0
+4,Ciclos,¿Qué palabra permite salir de un ciclo?,break,continue,class,import,0
+5,Arreglos,¿Desde qué índice inicia un arreglo en Java?,0,1,-1,10,0
+5,Arreglos,¿Qué propiedad permite conocer la longitud de un arreglo?,size,length,count,total,1
+5,Arreglos,¿Cuál de estas opciones declara un arreglo de enteros?,int[] numeros;,array numeros;,int numeros;,String[] int;,0
