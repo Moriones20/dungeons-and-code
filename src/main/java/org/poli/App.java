@@ -3,17 +3,17 @@ package org.poli;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import org.poli.basedatos.CargadorPreguntas;
 import org.poli.modelo.Pregunta;
-
 import org.poli.vista.juego.PantallaPractica;
+import org.poli.vista.menu.PantallaInstrucciones;
 import org.poli.vista.menu.PantallaMenu;
 import org.poli.vista.menu.PantallaMenuPractica;
 import org.poli.vista.menu.PantallaModoJuego;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class App extends Application {
 
@@ -29,52 +29,67 @@ public class App extends Application {
 
         escena = new Scene(menuInicio, 1000, 650);
 
+        // NAVEGACIÓN
         menuInicio.getBotonJugar().setOnAction(e -> {
 
             PantallaModoJuego pantallaModos = new PantallaModoJuego();
 
+            // Volver desde selección de modos al menú principal
             pantallaModos.getBotonVolver().setOnAction(ev -> {
                 escena.setRoot(menuInicio);
             });
 
+            // Modo práctica
             pantallaModos.getBotonPractica().setOnAction(ev -> {
 
                 PantallaMenuPractica pantallaPisosPractica =
                         new PantallaMenuPractica();
 
-                pantallaPisosPractica.getBotonVolver().setOnAction(evVolver -> {
-                    escena.setRoot(pantallaModos);
-                });
-
-                // PISO 1
+                // BOTONES DE LOS PISOS
                 pantallaPisosPractica.getBotonPiso1().setOnAction(e1 -> {
                     abrirPractica(1, pantallaPisosPractica);
                 });
 
-                // PISO 2
                 pantallaPisosPractica.getBotonPiso2().setOnAction(e2 -> {
                     abrirPractica(2, pantallaPisosPractica);
                 });
 
-                // PISO 3
                 pantallaPisosPractica.getBotonPiso3().setOnAction(e3 -> {
                     abrirPractica(3, pantallaPisosPractica);
                 });
 
-                // PISO 4
                 pantallaPisosPractica.getBotonPiso4().setOnAction(e4 -> {
                     abrirPractica(4, pantallaPisosPractica);
                 });
 
-                // PISO 5
                 pantallaPisosPractica.getBotonPiso5().setOnAction(e5 -> {
                     abrirPractica(5, pantallaPisosPractica);
+                });
+
+                // Volver al menú de modos
+                pantallaPisosPractica.getBotonVolver().setOnAction(evVolver -> {
+                    escena.setRoot(pantallaModos);
                 });
 
                 escena.setRoot(pantallaPisosPractica);
             });
 
+            menuInicio.getBotonJugar().requestFocus();
             escena.setRoot(pantallaModos);
+        });
+
+        // INSTRUCCIONES
+        menuInicio.getBotonInstrucciones().setOnAction(e -> {
+
+            PantallaInstrucciones pantallaReglas =
+                    new PantallaInstrucciones();
+
+            pantallaReglas.getBotonVolver().setOnAction(ev -> {
+                escena.setRoot(menuInicio);
+            });
+
+            menuInicio.getBotonInstrucciones().requestFocus();
+            escena.setRoot(pantallaReglas);
         });
 
         ventanaPrincipal.setTitle("Dungeons & Code");
