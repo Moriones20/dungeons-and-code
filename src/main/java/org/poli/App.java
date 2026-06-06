@@ -38,30 +38,40 @@ public class App extends Application {
                 escena.setRoot(menuInicio);
             });
 
-            // ----------------------------------------------------
+            // =====================================================================
             // JUGAR EN MODO REGULAR
-            // ----------------------------------------------------
+            // =====================================================================
             pantallaModos.getBotonRegular().setOnAction(ev -> {
-                // Instanciamos el escenario general de batalla
-                PantallaJuegoRegular combatePiso = new PantallaJuegoRegular();
 
-                // Acción para salir o rendirse y volver a la selección de modos
+                // Buscamos las preguntas que corresponden al piso
+                List<Pregunta> preguntasCampana = obtenerPreguntasPorPiso(1);
+
+                // 🚀 1. DEFINIMOS QUÉ PASA CUANDO DA GAME OVER
+                Runnable eventoGameOver = () -> {
+                    org.poli.vista.menu.PantallaGameOver pantallaMuerte = new org.poli.vista.menu.PantallaGameOver();
+
+                    // Si le da al botón de volver al menú principal
+                    pantallaMuerte.getBotonMenuPrincipal().setOnAction(eMenu -> {
+                        escena.setRoot(menuInicio); // Regresa al menú principal del juego
+                    });
+
+                    // Si le da al botón de reintentar el piso
+                    pantallaMuerte.getBotonReintentar().setOnAction(eReintentar -> {
+                        pantallaModos.getBotonRegular().fire(); // Reinicia el piso limpio
+                    });
+
+                    escena.setRoot(pantallaMuerte); // Muestra la pantalla negra de Game Over
+                };
+
+                // 🚀 2. CREAMOS LA PANTALLA PASÁNDOLE LOS DOS PARÁMETROS
+                PantallaJuegoRegular combatePiso = new PantallaJuegoRegular(preguntasCampana, eventoGameOver);
+
+                // Salir o rendirse
                 combatePiso.getBotonRendirse().setOnAction(evVolver -> {
                     escena.setRoot(pantallaModos);
                 });
 
-                // Simulaciones de clics de prueba para el equipo
-                combatePiso.getBotonOpcionA().setOnAction(click -> {
-                    // Si eligen la A (Correcta de prueba), golpeamos al Golem 25%
-                    combatePiso.infligirDanioEnemigo(0.25);
-                });
-
-                combatePiso.getBotonOpcionB().setOnAction(click -> {
-                    // Si eligen la B (Incorrecta de prueba), el héroe pierde una vida
-                    combatePiso.reducirVidaJugador();
-                });
-
-                escena.setRoot(combatePiso); // Desplegar el campo de batalla
+                escena.setRoot(combatePiso);
             });
 
             // ----------------------------------------------------
