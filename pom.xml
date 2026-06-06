@@ -9,10 +9,10 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!-- Java 25 LTS: TODOS los del equipo deben usar este mismo JDK -->
-        <maven.compiler.release>25</maven.compiler.release>
+        <!-- Java 21 LTS: TODOS los del equipo deben usar este mismo JDK -->
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>25</javafx.version>
+        <javafx.version>21</javafx.version>
         <junit.version>5.11.3</junit.version>
     </properties>
 
