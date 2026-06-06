@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html","k":"18"},{"l":"org.poli"},{"l":"org.poli.basedatos"},{"l":"org.poli.controlador"},{"l":"org.poli.modelo"},{"l":"org.poli.servicio"},{"l":"org.poli.util"},{"l":"org.poli.vista"},{"l":"org.poli.vista.juego"},{"l":"org.poli.vista.menu"},{"l":"org.poli.vista.resultado"}];updateSearchResults();
