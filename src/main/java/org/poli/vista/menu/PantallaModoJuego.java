@@ -23,7 +23,6 @@ public class PantallaModoJuego extends VBox {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(20);
 
-        // Ajustado exactamente a tu archivo FondoMenu.png
         try {
             Image imagenFondo = new Image(getClass().getResourceAsStream("/imagenes/FondoMenu.png"));
             BackgroundImage fondoRPG = new BackgroundImage(
@@ -59,7 +58,7 @@ public class PantallaModoJuego extends VBox {
         this.getChildren().addAll(titulo, botonNormal, botonHeroe, botonPractica, botonVolver);
     }
 
-    public Button getBotonNormal() { return botonNormal; }
+    public Button getBotonRegular() { return botonNormal; }
     public Button getBotonHeroe() { return botonHeroe; }
     public Button getBotonPractica() { return botonPractica; }
     public Button getBotonVolver() { return botonVolver; }

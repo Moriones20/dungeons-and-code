@@ -23,11 +23,11 @@ public class PantallaMenu extends VBox {
     private Button botonSalir;
 
     public PantallaMenu() {
-        // 1. Configurar el contenedor principal (VBox)
+        //Configurar el contenedor principal (VBox)
         this.setAlignment(Pos.CENTER);
         this.setSpacing(15);
 
-        // 2. Cargar y Aplicar la Imagen de Fondo Dinámica
+        //Cargar y Aplicar la Imagen de Fondo Dinámica
         try {
             Image imagenFondo = new Image(getClass().getResourceAsStream("/imagenes/FondoMenu.png"));
             BackgroundImage fondoRPG = new BackgroundImage(
@@ -43,41 +43,41 @@ public class PantallaMenu extends VBox {
             this.setStyle("-fx-background-color: #1a1a1a;");
         }
 
-        // 3. Cargar el Logo del Juego
+        //Cargar el Logo del Juego
         try {
             Image imagenLogo = new Image(getClass().getResourceAsStream("/imagenes/logo.png"));
             logoView = new ImageView(imagenLogo);
-            logoView.setFitWidth(320);  // Escalamos el logo a un tamaño óptimo
+            logoView.setFitWidth(320);
             logoView.setPreserveRatio(true); // Mantiene la proporción original para que no se deforme
         } catch (Exception e) {
             System.out.println("No se pudo cargar el logo.");
         }
 
-        // 4. Crear el Título y Lema (Basado en la tipografía llamativa e informativa)
+        //Crear el Título y Lema
         titulo = new Label("DUNGEONS & CODE");
         titulo.setStyle("-fx-text-fill: #ffcc00; -fx-font-size: 34px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
         lema = new Label("Aprende Java superando pisos, enemigos y desafíos de programación.");
         lema.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-style: italic; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.9), 5, 0, 0, 0);");
 
-        // 5. Crear y estilar los botones principales
+        //Crear y estilar los botones principales
         botonJugar = new Button("JUGAR");
         botonInstrucciones = new Button("INSTRUCCIONES");
         botonSalir = new Button("SALIR");
 
-        // Estilo adaptado para que los botones resalten del fondo del paisaje
+        //Estilo adaptado para que los botones resalten del fondo del paisaje
         String estiloBotonesMenu = "-fx-pref-width: 220px; -fx-pref-height: 45px; -fx-font-size: 14px; -fx-font-weight: bold; "
             + "-fx-background-color: #2a52be; -fx-text-fill: white; -fx-background-radius: 5;";
 
         botonJugar.setStyle(estiloBotonesMenu);
         botonInstrucciones.setStyle(estiloBotonesMenu);
-        // Al botón salir le damos un tono rojo como en tu imagen de referencia
+
         botonSalir.setStyle("-fx-pref-width: 220px; -fx-pref-height: 45px; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 5;");
 
-        // 6. Configurar la acción de cierre en el botón salir
+        //Configurar la acción de cierre en el botón salir
         botonSalir.setOnAction(e -> System.exit(0));
 
-        // 7. Añadir todo al contenedor en orden vertical descendente
+        //Añadir al contenedor en forma vertical
         if (logoView != null) {
             this.getChildren().add(logoView);
         }

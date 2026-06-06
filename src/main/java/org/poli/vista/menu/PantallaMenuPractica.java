@@ -24,11 +24,11 @@ public class PantallaMenuPractica extends VBox {
     private Button botonVolver;
 
     public PantallaMenuPractica() {
-        // 1. Configurar el contenedor principal
+        //Configurar el contenedor principal
         this.setAlignment(Pos.CENTER);
         this.setSpacing(20);
 
-        // 2. Aplicar el mismo Fondo RPG adaptativo
+        //Aplicar el mismo Fondo RPG adaptativo
         try {
             Image imagenFondo = new Image(getClass().getResourceAsStream("/imagenes/FondoMenu.png"));
             BackgroundImage fondoRPG = new BackgroundImage(
@@ -44,14 +44,14 @@ public class PantallaMenuPractica extends VBox {
             this.setStyle("-fx-background-color: #1a1a1a;");
         }
 
-        // 3. Crear los títulos con sombras de alta legibilidad
+        //Crear los títulos con sombras de alta legibilidad
         titulo = new Label("SELECCIÓN DE PISO (MODO PRÁCTICA)");
         titulo.setStyle("-fx-text-fill: #ffcc00; -fx-font-size: 24px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
         subtitulo = new Label("ELIGE EL PISO QUE QUIERES PRACTICAR");
         subtitulo.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.9), 5, 0, 0, 0);");
 
-        // 4. Crear los botones de los pisos
+        //Crear los botones de los pisos
         botonPiso1 = new Button("PISO 1\nVariables y Datos");
         botonPiso2 = new Button("PISO 2\nOperadores");
         botonPiso3 = new Button("PISO 3\nCondicionales");
@@ -59,7 +59,7 @@ public class PantallaMenuPractica extends VBox {
         botonPiso5 = new Button("PISO 5\nArreglos");
         botonVolver = new Button("VOLVER AL MENÚ");
 
-        // Estilo unificado para los botones de los pisos
+        //Estilo unificado para los botones de los pisos
         String estiloPisos = "-fx-pref-width: 180px; -fx-pref-height: 80px; -fx-font-size: 14px; -fx-font-weight: bold; "
             + "-fx-background-color: #2a52be; -fx-text-fill: white; -fx-background-radius: 5; -fx-text-alignment: center;";
 
@@ -71,7 +71,7 @@ public class PantallaMenuPractica extends VBox {
 
         botonVolver.setStyle("-fx-pref-width: 200px; -fx-pref-height: 40px; -fx-font-size: 12px; -fx-background-color: #444444; -fx-text-fill: white; -fx-background-radius: 5;");
 
-        // 5. Organizar en la cuadrícula (GridPane)
+        //Organizar en la cuadrícula
         GridPane contenedorPisos = new GridPane();
         contenedorPisos.setAlignment(Pos.CENTER);
         contenedorPisos.setHgap(15);
@@ -83,7 +83,7 @@ public class PantallaMenuPractica extends VBox {
         contenedorPisos.add(botonPiso4, 3, 0);
         contenedorPisos.add(botonPiso5, 4, 0);
 
-        // 6. Agregar todo al contenedor principal
+        // 6. Agregar al contenedor principal
         this.getChildren().addAll(titulo, subtitulo, contenedorPisos, botonVolver);
     }
 
