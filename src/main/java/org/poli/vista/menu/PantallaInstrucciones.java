@@ -52,14 +52,15 @@ public class PantallaInstrucciones extends VBox {
         contenedorReglas.setPrefWidth(700);
         contenedorReglas.setMaxWidth(700);
 
-        //Instrucciones
-        agregarRegla("🏰 OBJETIVO DEL JUEGO",
+        // Instrucciones (sin emojis: la fuente por defecto de JavaFX los pinta
+        // como un cuadro vacío).
+        agregarRegla("OBJETIVO DEL JUEGO",
             "Adéntrate en la torre 'Dungeons & Code' y supera los 5 pisos malditos. Cada piso representa una temática crucial de Java: Variables, Operadores, Condicionales, Ciclos y Arreglos.", true);
 
-        agregarRegla("⚔️ DINÁMICA DE COMBATE",
+        agregarRegla("DINÁMICA DE COMBATE",
             "En cada piso te enfrentarás a un enemigo. Para atacarlo o defenderte, deberás responder preguntas de programación de opción múltiple. ¡Si respondes bien, golpeas; si fallas, recibes daño!", false);
 
-        agregarRegla("⚖️ MODOS DE JUEGO",
+        agregarRegla("MODOS DE JUEGO",
             "• Modo Regular: Juega la campaña balanceada salvando tu progreso.\n" +
                 "• Modo Héroe: Un reto extremo para programadores veteranos. ¡Un solo fallo y es Game Over!\n" +
                 "• Modo Práctica: Ideal para repasar un piso específico sin presiones.", false);
