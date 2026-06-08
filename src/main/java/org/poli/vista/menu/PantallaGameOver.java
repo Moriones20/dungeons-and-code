@@ -18,8 +18,9 @@ public class PantallaGameOver extends VBox {
         this.setPadding(new Insets(50));
         this.setStyle("-fx-background-color: #0a0a0a;"); // Un negro profundo táctico
 
-        // Título de la pantalla
-        Label labelTitulo = new Label("☠️ GAME OVER ☠️");
+        // Título de la pantalla (sin emojis: la fuente por defecto de JavaFX no
+        // los renderiza y aparecen como un cuadro vacío).
+        Label labelTitulo = new Label("GAME OVER");
         labelTitulo.setStyle("-fx-text-fill: #b71c1c; -fx-font-size: 45px; -fx-font-weight: bold; -fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);");
 
         // Subtítulo descriptivo

@@ -20,4 +20,5 @@ public final class Constantes {
     // --- Reglas del juego (ajustad estos valores a vuestro gusto) ---
     public static final int VIDAS_INICIALES = 3;
     public static final int PUNTOS_POR_ACIERTO = 10;
+    public static final int TOTAL_PISOS_REGULAR = 5;
 }

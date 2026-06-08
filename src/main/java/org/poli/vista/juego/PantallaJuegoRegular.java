@@ -1,5 +1,11 @@
 package org.poli.vista.juego;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,10 +21,23 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundSize;
+import javafx.util.Duration;
 import java.util.List;
+import java.util.function.Consumer;
+import org.poli.modelo.Partida;
 import org.poli.modelo.Pregunta;
-import javafx.event.ActionEvent;
+import org.poli.util.Constantes;
 
+/**
+ * Pantalla de combate del modo regular: muestra la pregunta y sus opciones
+ * como botones y reacciona a la respuesta del jugador.
+ *
+ * Toda la lógica del juego (vidas, daño, victoria/derrota) vive en el modelo
+ * {@link Partida}. Esta clase es VISTA: refleja el estado de la partida, da
+ * feedback visual de los golpes y le reenvía las pulsaciones. Cuando la partida
+ * termina, avisa al controlador (Navegador) mediante los callbacks
+ * {@code alPerder} y {@code alGanar}.
+ */
 public class PantallaJuegoRegular extends BorderPane {
 
     // 1. Componentes de la Zona Superior (Estado de la Batalla)
@@ -26,8 +45,6 @@ public class PantallaJuegoRegular extends BorderPane {
     private Label labelVidasJugador;
     private Label labelNombreEnemigo;
     private ProgressBar barraVidaEnemigo;
-    private double vidaEnemigoActual = 1.0;
-    private int vidasJugadorActual = 3;
 
     // 2. Componentes de la Zona Central (Campo de Batalla)
     private ImageView avatarJugador;
@@ -41,15 +58,24 @@ public class PantallaJuegoRegular extends BorderPane {
     private Button botonOpcionD;
     private Button botonRendirse;
 
-    //VARIABLES PARA CONTROLAR LAS PREGUNTAS DINÁMICAS
-    private List<Pregunta> listaPreguntas;
-    private int indicePreguntaActual = 0;
-    private Runnable alTerminarGameOver;
+    // Estado del juego (modelo) y avisos al controlador
+    private final Partida partida;
+    private final Runnable alPerder;
+    private final Consumer<Partida> alGanar;
 
-    // Constructor que recibe las preguntas
-    public PantallaJuegoRegular(List<Pregunta> preguntas, Runnable alTerminarGameOver) {
-        this.listaPreguntas = preguntas;
-        this.alTerminarGameOver = alTerminarGameOver;
+    /**
+     * Crea la pantalla de combate.
+     *
+     * @param preguntas preguntas del piso a jugar
+     * @param piso      número de piso (para el rótulo superior)
+     * @param alPerder  acción a ejecutar cuando el jugador se queda sin vidas
+     * @param alGanar   acción a ejecutar cuando el jugador supera el piso
+     *                  (recibe la partida terminada para mostrar el resultado)
+     */
+    public PantallaJuegoRegular(List<Pregunta> preguntas, int piso, Runnable alPerder, Consumer<Partida> alGanar) {
+        this.partida = new Partida(preguntas, Constantes.VIDAS_INICIALES);
+        this.alPerder = alPerder;
+        this.alGanar = alGanar;
 
         // ---- APLICAR EL FONDO DE LA BATALLA DEL PISO 1 ----
         try {
@@ -75,10 +101,12 @@ public class PantallaJuegoRegular extends BorderPane {
         topBar.setAlignment(Pos.CENTER);
         topBar.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7); -fx-border-color: #ffcc00; -fx-border-width: 0 0 2 0;");
 
-        labelPiso = new Label("PISO 1: VARIABLES Y DATOS");
+        // Rótulo del piso: usa el número recibido y el tema de las preguntas.
+        String tema = (preguntas != null && !preguntas.isEmpty()) ? preguntas.get(0).getTema() : "";
+        labelPiso = new Label("PISO " + piso + ": " + tema.toUpperCase());
         labelPiso.setStyle("-fx-text-fill: #ffcc00; -fx-font-size: 16px; -fx-font-weight: bold;");
 
-        labelVidasJugador = new Label("VIDAS: ❤️ ❤️ ❤️");
+        labelVidasJugador = new Label();
         labelVidasJugador.setStyle("-fx-text-fill: #ff4444; -fx-font-size: 16px; -fx-font-weight: bold;");
 
         VBox infoEnemigo = new VBox(5);
@@ -157,6 +185,13 @@ public class PantallaJuegoRegular extends BorderPane {
         botonOpcionC.setStyle(estiloBotonCodigo);
         botonOpcionD.setStyle(estiloBotonCodigo);
 
+        // Las opciones siempre validan la misma posición (0=A, 1=B, 2=C, 3=D);
+        // basta con conectarlas una vez.
+        botonOpcionA.setOnAction(e -> responder(0));
+        botonOpcionB.setOnAction(e -> responder(1));
+        botonOpcionC.setOnAction(e -> responder(2));
+        botonOpcionD.setOnAction(e -> responder(3));
+
         filaOpciones1.getChildren().addAll(botonOpcionA, botonOpcionB);
         filaOpciones2.getChildren().addAll(botonOpcionC, botonOpcionD);
 
@@ -166,127 +201,128 @@ public class PantallaJuegoRegular extends BorderPane {
         seccionPregunta.getChildren().addAll(labelEnunciadoPregunta, filaOpciones1, filaOpciones2, botonRendirse);
         this.setBottom(seccionPregunta);
 
-
-        if (listaPreguntas != null && !listaPreguntas.isEmpty()) {
+        // Estado inicial (sin animación)
+        actualizarVidasLabel();
+        barraVidaEnemigo.setProgress(partida.getVidaEnemigo());
+        if (partida.estaEnCurso()) {
             mostrarPreguntaActual();
+        } else {
+            labelEnunciadoPregunta.setText("// No hay preguntas disponibles para este piso.");
         }
     }
 
-// =====================================================================
-    // MÉTODOS DE CONTROL DINÁMICOS 🚀
+    // =====================================================================
+    // CONTROL DE LA VISTA
     // =====================================================================
 
-    //Este método toma la pregunta del índice actual y la "dibuja" en la pantalla
+    /** Dibuja en pantalla la pregunta actual del modelo. */
     private void mostrarPreguntaActual() {
-        Pregunta pregunta = listaPreguntas.get(indicePreguntaActual);
+        Pregunta pregunta = partida.getPreguntaActual();
 
-        // 1. Seteamos el enunciado
         labelEnunciadoPregunta.setText("// Pregunta de compilación:\n" + pregunta.getEnunciado());
 
-        // 2. Extraemos el arreglo de opciones que hizo tu compañero
         String[] opciones = pregunta.getOpciones();
-
-        // 3. Pintamos cada opción usando su posición en el arreglo [0, 1, 2, 3]
         botonOpcionA.setText("A) " + opciones[0]);
         botonOpcionB.setText("B) " + opciones[1]);
         botonOpcionC.setText("C) " + opciones[2]);
         botonOpcionD.setText("D) " + opciones[3]);
-
-        // 4. Configuramos la acción pasando el número de opción (0=A, 1=B, 2=C, 3=D)
-        botonOpcionA.setOnAction((javafx.event.ActionEvent e) -> verificarRespuesta(0));
-        botonOpcionB.setOnAction((javafx.event.ActionEvent e) -> verificarRespuesta(1));
-        botonOpcionC.setOnAction((javafx.event.ActionEvent e) -> verificarRespuesta(2));
-        botonOpcionD.setOnAction((javafx.event.ActionEvent e) -> verificarRespuesta(3));
     }
 
-    // 🚀 Valida si el usuario acertó o falló usando el método .esCorrecta() de tu compañero
-    private void verificarRespuesta(int indiceSeleccionado) {
-        Pregunta pregunta = listaPreguntas.get(indicePreguntaActual);
+    /**
+     * Reenvía la respuesta al modelo, da feedback visual del golpe, refresca la
+     * vista y, si la partida ha terminado, avisa al controlador.
+     *
+     * @param indiceSeleccionado opción elegida por el jugador
+     */
+    private void responder(int indiceSeleccionado) {
+        double vidaEnemigoAntes = partida.getVidaEnemigo();
 
-        // Usamos el método que él creó para validar pasándole el número
-        if (pregunta.esCorrecta(indiceSeleccionado)) {
-            // ¡Correcto! Golpeamos al Golem un ~33.4% (3 respuestas para ganar)
-            infligirDanioEnemigo(0.334);
+        boolean acierto = partida.responder(indiceSeleccionado);
+
+        actualizarVidasLabel();
+        animarBarraEnemigo(vidaEnemigoAntes, partida.getVidaEnemigo());
+
+        if (acierto) {
+            efectoGolpeEnemigo();
         } else {
-            // ¡Incorrecto! El héroe pierde una vida
-            reducirVidaJugador();
+            efectoDanioJugador();
         }
 
-        //SI EL JUGADOR SE QUEDA SIN VIDAS (AQUÍ ESTÁ EL CAMBIO 🚀)
-        if (vidasJugadorActual <= 0) {
-            System.out.println("¡Game Over!");
-
-            if (alTerminarGameOver != null) {
-                alTerminarGameOver.run(); // 🌟 Esto saca al jugador de aquí y abre la PantallaGameOver
+        if (partida.hayDerrota()) {
+            if (alPerder != null) {
+                alPerder.run();
             }
             return;
         }
 
-        //SI EL ENEMIGO MUERE
-        if (vidaEnemigoActual <= 0) {
-            System.out.println("¡Derrotaste al Golem de este piso!");
+        if (partida.hayVictoria()) {
+            if (alGanar != null) {
+                alGanar.accept(partida);
+            }
             return;
         }
 
-        //SI LA PARTIDA SIGUE (Pasamos a la siguiente pregunta, máximo 3)
-        indicePreguntaActual++;
-        if (indicePreguntaActual < listaPreguntas.size() && indicePreguntaActual < 3) {
-            mostrarPreguntaActual(); // Redibujar la pantalla con la nueva pregunta
-        } else {
-            System.out.println("Fin de las preguntas de este piso.");
-        }
+        mostrarPreguntaActual();
     }
 
-    public void actualizarPregunta(String enunciado, String a, String b, String c, String d) {
-        labelEnunciadoPregunta.setText(enunciado);
-        botonOpcionA.setText(a);
-        botonOpcionB.setText(b);
-        botonOpcionC.setText(c);
-        botonOpcionD.setText(d);
+    /** Sincroniza el texto de vidas del jugador con el modelo (corazones). */
+    private void actualizarVidasLabel() {
+        StringBuilder corazones = new StringBuilder("VIDAS: ");
+        for (int i = 0; i < partida.getVidas(); i++) {
+            corazones.append("♥ "); // ♥ corazón simple (renderiza en cualquier fuente)
+        }
+        if (partida.getVidas() <= 0) {
+            corazones.append("GAME OVER");
+        }
+        labelVidasJugador.setText(corazones.toString());
     }
 
+    // =====================================================================
+    // EFECTOS VISUALES (feedback de daño)
+    // =====================================================================
 
-    public void reducirVidaJugador() {
-        if (vidasJugadorActual > 0) {
-            vidasJugadorActual--;
-            StringBuilder corazones = new StringBuilder("VIDAS: ");
-            for (int i = 0; i < vidasJugadorActual; i++) {
-                corazones.append("❤️ ");
-            }
-            if(vidasJugadorActual == 0) {
-                corazones.append("☠️ GAME OVER");
-            }
-            labelVidasJugador.setText(corazones.toString());
-        }
+    /** Anima la barra del enemigo bajando suavemente de un valor a otro. */
+    private void animarBarraEnemigo(double desde, double hasta) {
+        barraVidaEnemigo.setProgress(desde);
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.millis(450),
+                new KeyValue(barraVidaEnemigo.progressProperty(), hasta))
+        );
+        timeline.setOnFinished(e ->
+            barraVidaEnemigo.setStyle(hasta <= 0.3 ? "-fx-accent: #ff3333;" : "-fx-accent: #33cc33;")
+        );
+        timeline.play();
     }
 
-    public void infligirDanioEnemigo(double porcentajeDanio) {
-        vidaEnemigoActual -= porcentajeDanio;
-        if (vidaEnemigoActual < 0) vidaEnemigoActual = 0;
-        barraVidaEnemigo.setProgress(vidaEnemigoActual);
-
-        if (vidaEnemigoActual <= 0.3) {
-            barraVidaEnemigo.setStyle("-fx-accent: #ff3333;");
-        }
+    /** Golpe al enemigo: un breve "rebote" de su avatar al acertar. */
+    private void efectoGolpeEnemigo() {
+        ScaleTransition golpe = new ScaleTransition(Duration.millis(90), avatarEnemigo);
+        golpe.setFromX(1.0);
+        golpe.setFromY(1.0);
+        golpe.setToX(1.12);
+        golpe.setToY(1.12);
+        golpe.setCycleCount(2);
+        golpe.setAutoReverse(true);
+        golpe.play();
     }
 
-    public void cambiarConfiguracionPiso(int numPiso, String temaPiso, String rutaImagenMonstruo, String rutaFondo) {
-        this.labelPiso.setText("PISO " + numPiso + ": " + temaPiso.toUpperCase());
-        this.vidaEnemigoActual = 1.0;
-        this.barraVidaEnemigo.setProgress(1.0);
-        this.barraVidaEnemigo.setStyle("-fx-accent: #33cc33;");
+    /** Daño al jugador: sacude su avatar y parpadea el marcador de vidas. */
+    private void efectoDanioJugador() {
+        TranslateTransition sacudida = new TranslateTransition(Duration.millis(55), avatarJugador);
+        sacudida.setFromX(0);
+        sacudida.setByX(12);
+        sacudida.setCycleCount(6);
+        sacudida.setAutoReverse(true);
+        sacudida.setOnFinished(e -> avatarJugador.setTranslateX(0));
+        sacudida.play();
 
-        cargarImagenComponente(this.avatarEnemigo, rutaImagenMonstruo);
-
-        try {
-            Image nuevoFondo = new Image(getClass().getResourceAsStream(rutaFondo));
-            this.setBackground(new Background(new BackgroundImage(
-                nuevoFondo, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER, new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true)
-            )));
-        } catch (Exception e) {
-            System.out.println("No se pudo mapear el fondo dinámico.");
-        }
+        FadeTransition parpadeo = new FadeTransition(Duration.millis(110), labelVidasJugador);
+        parpadeo.setFromValue(1.0);
+        parpadeo.setToValue(0.2);
+        parpadeo.setCycleCount(4);
+        parpadeo.setAutoReverse(true);
+        parpadeo.setOnFinished(e -> labelVidasJugador.setOpacity(1.0));
+        parpadeo.play();
     }
 
     private void cargarImagenComponente(ImageView view, String ruta) {
@@ -304,5 +340,5 @@ public class PantallaJuegoRegular extends BorderPane {
     public Button getBotonOpcionC() { return botonOpcionC; }
     public Button getBotonOpcionD() { return botonOpcionD; }
     public Button getBotonRendirse() { return botonRendirse; }
-    public int getVidasJugadorActual() { return vidasJugadorActual; }
+    public int getVidasJugadorActual() { return partida.getVidas(); }
 }
